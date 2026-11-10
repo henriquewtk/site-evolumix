@@ -1,0 +1,72 @@
+---
+import Icon from './Icon.astro';
+import { categories, company, segments, waLink, type Category } from '../data/site';
+
+const groups = [
+  { id: 'empresas', label: 'Para empresas', items: categories.empresas },
+  { id: 'casa', label: 'Para sua casa', items: categories.casa },
+] as const;
+
+const msg = (c: Category) => `Olá! Vim pelo site da Evolumix e gostaria de uma cotação de ${c.title.toLowerCase()}.`;
+const isFerragista = (c: Category) => c.title.toLowerCase().includes('ferragista');
+---
+<section id="produtos" class="py-[72px] sm:py-24" aria-labelledby="produtos-titulo">
+  <div class="container-x">
+    <div class="mb-8 flex flex-col gap-6 sm:mb-12 lg:flex-row lg:items-end lg:justify-between" data-reveal>
+      <div>
+        <p class="kicker"><span class="speed"><i></i><i></i></span>Linhas de produtos</p>
+        <h2 id="produtos-titulo" class="h-section max-w-[16ch]">Do banheiro ao estoque, da limpeza à reforma.</h2>
+      </div>
+      <div role="tablist" aria-label="Tipo de cliente" class="pill-tabs w-full sm:w-auto">
+        {groups.map((g, i) => (
+          <button type="button" role="tab" id={`tab-${g.id}`} aria-controls={`painel-${g.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>{g.label}</button>
+        ))}
+      </div>
+    </div>
+
+    {groups.map((g, gi) => (
+      <div id={`painel-${g.id}`} role="tabpanel" aria-labelledby={`tab-${g.id}`} hidden={gi !== 0}>
+        <ul class="grid gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+          {g.items.map((c, i) => (
+            <li data-reveal style={`--d:${(i % 3) * 70}ms`}>
+              <article class="flex h-full overflow-hidden rounded-card border border-ash bg-white shadow-[0_4px_12px_rgba(0,0,0,0.04)] max-sm:items-stretch sm:flex-col">
+                <div class="ph w-[104px] shrink-0 max-sm:p-2 sm:aspect-[16/10] sm:w-auto" role="img" aria-label={`Foto: ${c.photo} (em breve)`}>
+                  <span class="ph-label max-sm:hidden">Foto produto</span>
+                </div>
+                <div class="flex flex-1 flex-col p-4 sm:p-6">
+                  <h3 class="text-[17px] leading-snug font-semibold tracking-[-0.02em] sm:text-[22px] sm:font-medium">
+                    {c.title}
+                    {c.tag && <span class="ml-1.5 inline-block rounded-full bg-brand-soft px-2 py-0.5 align-[3px] text-xs font-semibold text-brand-ink">{c.tag}</span>}
+                  </h3>
+                  <p class="mt-1.5 mb-3 text-[15px] leading-relaxed text-txt-2 sm:mt-2 sm:mb-5 sm:text-base">{c.text}</p>
+                  <a href={waLink(company.mainPhone, msg(c))} data-wa data-wa-msg={msg(c)} data-wa-unit={isFerragista(c) ? 'ferragista' : undefined} class="group mt-auto inline-flex min-h-10 items-center gap-2 self-start text-[15px] font-semibold">
+                    Pedir cotação
+                    <span class="grid size-[26px] place-items-center rounded-full bg-brand transition-transform duration-200 group-hover:translate-x-0.5"><Icon name="arrow" size={14} /></span>
+                  </a>
+                </div>
+              </article>
+            </li>
+          ))}
+        </ul>
+        {g.id === 'casa' && (
+          <p class="mt-6 text-[15px] text-txt-2">
+            Atendimento no balcão em Goiânia e também no
+            <a href="https://www.mercadolivre.com.br/pagina/evolumixdistribuicao" target="_blank" rel="noopener" class="font-semibold text-txt underline decoration-brand decoration-2 underline-offset-4">Mercado Livre</a>.
+          </p>
+        )}
+      </div>
+    ))}
+
+    <div class="mt-12 flex flex-col gap-4 border-t border-ash pt-8 sm:flex-row sm:items-center sm:gap-8" data-reveal>
+      <p class="shrink-0 text-sm font-semibold text-txt-2">Atendemos</p>
+      <ul class="flex flex-wrap gap-2">
+        {segments.map((s) => <li class="rounded-full border border-ash px-3.5 py-1.5 text-sm font-medium">{s}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initTabs } from '../scripts/tabs';
+  initTabs();
+</script>

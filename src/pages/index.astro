@@ -1,0 +1,30 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Products from '../components/Products.astro';
+import HowToBuy from '../components/HowToBuy.astro';
+import About from '../components/About.astro';
+import Units from '../components/Units.astro';
+import Sellers from '../components/Sellers.astro';
+import FinalCta from '../components/FinalCta.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppPicker from '../components/WhatsAppPicker.astro';
+---
+<Layout
+  title="Evolumix | Higiene, limpeza, descartáveis e ferragista em Goiânia e Rio Verde"
+  description="Distribuidora de higiene e limpeza profissional, descartáveis, papelaria e ferragista em Goiânia e Rio Verde. Atacado e varejo, vendedor dedicado e entrega em Goiânia."
+>
+  <Header />
+  <main id="conteudo">
+    <Hero />
+    <Products />
+    <HowToBuy />
+    <About />
+    <Units />
+    <Sellers />
+    <FinalCta />
+  </main>
+  <Footer />
+  <WhatsAppPicker />
+</Layout>

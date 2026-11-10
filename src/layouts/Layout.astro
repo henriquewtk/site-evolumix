@@ -1,0 +1,109 @@
+---
+import '@fontsource-variable/manrope';
+import '../styles/global.css';
+import { company, units, socials } from '../data/site';
+
+type Props = { title: string; description: string };
+const { title, description } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og.png', Astro.site);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': new URL('/#org', Astro.site).href,
+      name: company.name,
+      legalName: company.legalName,
+      url: Astro.site?.href,
+      logo: new URL('/evolumix-logo-light-bg.svg', Astro.site).href,
+      email: company.email,
+      telephone: `+${company.mainPhone}`,
+      sameAs: socials.map((s) => s.href),
+    },
+    ...units.map((u) => ({
+      '@type': 'Store',
+      '@id': new URL(`/#${u.id}`, Astro.site).href,
+      name: `${company.name} ${u.city}`,
+      parentOrganization: { '@id': new URL('/#org', Astro.site).href },
+      image: ogImage.href,
+      telephone: `+${u.phone}`,
+      email: u.email,
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: u.street,
+        addressLocality: u.city,
+        addressRegion: u.region,
+        ...(u.postalCode ? { postalCode: u.postalCode } : {}),
+        addressCountry: 'BR',
+      },
+      hasMap: u.maps,
+      openingHoursSpecification: u.openingHours.flatMap((o) =>
+        o.ranges.map(([opens, closes]) => ({
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: o.days,
+          opens,
+          closes,
+        })),
+      ),
+    })),
+  ],
+};
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#141416" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={company.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <a href="#conteudo" class="sr-only z-[100] rounded-full bg-brand px-4 py-2 font-semibold text-ink focus:not-sr-only focus:fixed focus:top-3 focus:left-3">Pular para o conteúdo</a>
+    <slot />
+    <script>
+      // Revelação suave das seções ao rolar
+      const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                e.target.classList.add('is-in');
+                io.unobserve(e.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px' },
+        );
+        items.forEach((el) => io.observe(el));
+      } else {
+        items.forEach((el) => el.classList.add('is-in'));
+      }
+    </script>
+  </body>
+</html>

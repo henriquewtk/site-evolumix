@@ -1,0 +1,82 @@
+---
+import Icon from './Icon.astro';
+import { company, waLink } from '../data/site';
+
+const links = [
+  { href: '#produtos', label: 'Produtos' },
+  { href: '#como-comprar', label: 'Como comprar' },
+  { href: '#unidades', label: 'Unidades' },
+  { href: '#vendedores', label: 'Vendedores' },
+];
+---
+<header id="site-header" class="on-dark fixed inset-x-0 top-0 z-50 border-b border-transparent transition-[background-color,border-color,backdrop-filter] duration-300 data-[solid=true]:border-white/10 data-[solid=true]:bg-ink/90 data-[solid=true]:backdrop-blur-md">
+  <div class="container-x flex h-[68px] items-center gap-3 sm:h-20 lg:gap-9">
+    <a href="#topo" class="min-w-0 shrink" aria-label="Evolumix — início">
+      <img src="/evolumix-logo-dark-bg.svg" alt="Evolumix Distribuição e Suprimentos" width="160" height="36" class="h-[27px] w-auto sm:h-9" />
+    </a>
+
+    <nav aria-label="Principal" class="ml-auto hidden lg:block">
+      <ul class="flex gap-8">
+        {links.map((l) => (
+          <li><a href={l.href} class="text-[15px] font-medium text-white/80 transition-colors hover:text-white">{l.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <a href={waLink(company.mainPhone)} data-wa class="btn btn-primary btn-sm ml-auto shrink-0 max-lg:size-11 max-lg:px-0 lg:ml-0" aria-label="Falar no WhatsApp">
+      <Icon name="whatsapp" size={19} />
+      <span class="hidden lg:inline">Falar no WhatsApp</span>
+    </a>
+
+    <button id="menu-btn" type="button" class="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-white/25 text-white lg:hidden" aria-expanded="false" aria-controls="mobile-menu" aria-label="Abrir menu">
+      <Icon name="menu" size={20} class="menu-open" />
+      <Icon name="close" size={20} class="menu-close hidden" />
+    </button>
+  </div>
+
+  <div id="mobile-menu" class="hidden border-t border-white/10 bg-ink lg:hidden">
+    <nav aria-label="Menu móvel" class="container-x py-4">
+      <ul class="flex flex-col">
+        {links.map((l) => (
+          <li><a href={l.href} class="flex min-h-12 items-center border-b border-white/10 text-lg text-white">{l.label}</a></li>
+        ))}
+      </ul>
+      <a href={waLink(company.mainPhone)} data-wa class="btn btn-primary btn-lg mt-5 w-full">
+        <Icon name="whatsapp" size={19} /> Pedir orçamento no WhatsApp
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('site-header')!;
+  const btn = document.getElementById('menu-btn')!;
+  const menu = document.getElementById('mobile-menu')!;
+
+  const setSolid = () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    header.dataset.solid = String(open || window.scrollY > 24);
+  };
+  setSolid();
+  window.addEventListener('scroll', setSolid, { passive: true });
+
+  const toggle = (open: boolean) => {
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+    menu.classList.toggle('hidden', !open);
+    btn.querySelector('.menu-open')!.classList.toggle('hidden', open);
+    btn.querySelector('.menu-close')!.classList.toggle('hidden', !open);
+    setSolid();
+  };
+  btn.addEventListener('click', () => toggle(btn.getAttribute('aria-expanded') !== 'true'));
+  menu.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('a')) toggle(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') {
+      toggle(false);
+      btn.focus();
+    }
+  });
+  window.matchMedia('(min-width: 1024px)').addEventListener('change', (m) => m.matches && toggle(false));
+</script>

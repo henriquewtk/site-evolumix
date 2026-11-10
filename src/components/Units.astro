@@ -1,0 +1,56 @@
+---
+import Icon from './Icon.astro';
+import { units, waLink, formatPhone } from '../data/site';
+---
+<section id="unidades" class="py-[72px] sm:py-24" aria-labelledby="unidades-titulo">
+  <div class="container-x">
+    <div class="mb-10 sm:mb-14" data-reveal>
+      <p class="kicker"><span class="speed"><i></i><i></i></span>Unidades</p>
+      <h2 id="unidades-titulo" class="h-section">Onde estamos.</h2>
+    </div>
+
+    <ul class="grid gap-4 sm:gap-5 lg:grid-cols-2">
+      {units.map((u, i) => (
+        <li data-reveal style={`--d:${i * 90}ms`}>
+          <article class="flex h-full flex-col rounded-card border border-ash bg-white p-6 shadow-[0_4px_12px_rgba(0,0,0,0.04)] sm:p-8" aria-labelledby={`unidade-${u.id}`}>
+            <div class="flex items-center justify-between gap-4">
+              <h3 id={`unidade-${u.id}`} class="text-[28px] font-normal tracking-[-0.03em] sm:text-[34px]">{u.city}</h3>
+              <span class="rounded-full bg-brand-soft px-3 py-1 text-xs font-semibold text-brand-ink">{u.label}</span>
+            </div>
+
+            <dl class="mt-6 grid gap-5 text-[15px] sm:text-base">
+              <div class="flex gap-3.5">
+                <dt class="mt-0.5 text-txt-2"><Icon name="pin" size={20} /><span class="sr-only">Endereço</span></dt>
+                <dd>
+                  <address class="not-italic">{u.street}<br />{u.district}, {u.city} – {u.region}{u.postalCode && <>, CEP {u.postalCode}</>}</address>
+                  {u.note && <p class="mt-1 text-sm text-txt-2">{u.note}</p>}
+                </dd>
+              </div>
+              <div class="flex gap-3.5">
+                <dt class="mt-0.5 text-txt-2"><Icon name="clock" size={20} /><span class="sr-only">Horário</span></dt>
+                <dd class="grid flex-1 gap-1">
+                  {u.hours.map((h) => (
+                    <p class="flex flex-wrap justify-between gap-x-4"><span class="text-txt-2">{h.days}</span><span class="font-medium">{h.time}</span></p>
+                  ))}
+                </dd>
+              </div>
+              <div class="flex gap-3.5">
+                <dt class="mt-0.5 text-txt-2"><Icon name="phone" size={20} /><span class="sr-only">Telefone</span></dt>
+                <dd><span class="text-txt-2">{u.phoneLabel}:</span> <a href={`tel:+${u.phone}`} class="font-semibold whitespace-nowrap underline-offset-4 hover:underline">{formatPhone(u.phone)}</a></dd>
+              </div>
+              <div class="flex gap-3.5">
+                <dt class="mt-0.5 text-txt-2"><Icon name="mail" size={20} /><span class="sr-only">E-mail</span></dt>
+                <dd class="min-w-0"><a href={`mailto:${u.email}`} class="break-all underline-offset-4 hover:underline">{u.email}</a></dd>
+              </div>
+            </dl>
+
+            <div class="mt-8 flex flex-col gap-3 pt-0 sm:mt-auto sm:flex-row sm:pt-8">
+              <a href={waLink(u.phone)} target="_blank" rel="noopener" class="btn btn-primary"><Icon name="whatsapp" size={18} /> WhatsApp {u.city}</a>
+              <a href={u.maps} target="_blank" rel="noopener" class="btn btn-outline-dark"><Icon name="pin" size={18} /> Ver no mapa</a>
+            </div>
+          </article>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

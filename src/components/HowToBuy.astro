@@ -1,0 +1,56 @@
+---
+import Icon from './Icon.astro';
+import { brands } from '../data/site';
+
+const steps = [
+  { title: 'Chame no WhatsApp', text: 'Diga o que precisa ou mande sua lista de produtos.' },
+  { title: 'Receba o orçamento', text: 'Um vendedor monta o pedido com você, item por item.' },
+  { title: 'Receba ou retire', text: 'Entrega em Goiânia ou retirada na loja.' },
+];
+
+const perks = [
+  { icon: 'user', title: 'Vendedor dedicado', text: 'Você fala sempre com quem já conhece sua rotina.' },
+  { icon: 'headset', title: 'Suporte especializado', text: 'Ajuda para escolher o produto certo para cada uso.' },
+  { icon: 'bolt', title: 'Agilidade', text: 'Atendimento rápido do pedido à entrega.' },
+  { icon: 'layers', title: 'Atacado e varejo', text: 'Compras para a sua empresa e para a sua casa.' },
+];
+---
+<section id="como-comprar" class="bg-soft py-[72px] sm:py-24" aria-labelledby="comprar-titulo">
+  <div class="container-x">
+    <div class="mb-10 sm:mb-14" data-reveal>
+      <p class="kicker"><span class="speed"><i></i><i></i></span>Como comprar</p>
+      <h2 id="comprar-titulo" class="h-section">Comprar é simples.</h2>
+    </div>
+
+    <ol class="grid gap-3 sm:gap-5 lg:grid-cols-3">
+      {steps.map((s, i) => (
+        <li class="flex gap-5 rounded-card border border-ash bg-white p-6 lg:flex-col lg:gap-10 lg:p-8" data-reveal style={`--d:${i * 80}ms`}>
+          <span class="text-[40px] leading-none font-extralight tracking-[-0.04em] text-txt-2 lg:text-[56px]" aria-hidden="true">0{i + 1}</span>
+          <div>
+            <h3 class="text-xl font-semibold tracking-[-0.02em]">{s.title}</h3>
+            <p class="mt-1.5 leading-relaxed text-txt-2">{s.text}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <ul class="mt-12 grid gap-x-8 gap-y-6 sm:mt-14 sm:grid-cols-2 sm:gap-y-8 lg:mt-20 lg:grid-cols-4">
+      {perks.map((p, i) => (
+        <li class="flex gap-4 sm:block" data-reveal style={`--d:${i * 70}ms`}>
+          <span class="grid size-11 shrink-0 place-items-center rounded-full bg-ink text-brand"><Icon name={p.icon} size={20} /></span>
+          <div>
+            <h3 class="font-semibold tracking-[-0.01em] sm:mt-4">{p.title}</h3>
+            <p class="mt-1 text-[15px] leading-relaxed text-txt-2">{p.text}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    <div class="mt-14 flex flex-col gap-4 border-t border-ash pt-8 lg:mt-20 lg:flex-row lg:items-center lg:gap-10" data-reveal>
+      <p class="shrink-0 text-sm font-semibold text-txt-2">Marcas que trabalhamos</p>
+      <ul class="flex flex-wrap items-center gap-x-8 gap-y-2">
+        {brands.map((b) => <li class="text-xl font-semibold tracking-[-0.02em] text-txt/55 sm:text-2xl">{b}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>

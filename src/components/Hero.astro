@@ -1,0 +1,68 @@
+---
+import Icon from './Icon.astro';
+import { company, waLink } from '../data/site';
+
+const stats = [
+  { big: '+20 anos', small: 'no mercado goiano' },
+  { big: '2 unidades', small: 'Goiânia e Rio Verde' },
+  { big: 'Entrega', small: 'em Goiânia' },
+  { big: 'Atacado', small: 'e varejo' },
+];
+---
+<section id="topo" class="hero on-dark relative text-center text-white">
+  <div class="container-x pt-[118px] sm:pt-[156px]">
+    <p class="inline-flex items-center gap-2.5 rounded-full border border-white/20 bg-white/5 py-1.5 pr-4 pl-3 text-[12px] whitespace-nowrap text-white/85 min-[380px]:text-[13px] sm:text-sm">
+      <span class="speed text-white"><i></i><i></i></span>
+      Goiânia e Rio Verde · há mais de 20 anos
+    </p>
+
+    <h1 class="h-display mx-auto mt-6 mb-5 max-w-[16ch] text-[35px] min-[380px]:text-[42px] sm:mt-7 sm:mb-6 sm:text-[64px] lg:text-[84px]">
+      Tudo o que sua empresa precisa, <strong class="block font-semibold text-brand">em um só lugar.</strong>
+    </h1>
+
+    <p class="mx-auto max-w-[44ch] text-[17px] leading-relaxed text-on-dark sm:text-xl">
+      Higiene e limpeza profissional, descartáveis, papelaria e ferragens. Atacado e varejo, com vendedor dedicado.
+    </p>
+
+    <div class="mt-8 flex flex-col justify-center gap-3 sm:mt-10 sm:flex-row">
+      <a href={waLink(company.mainPhone)} data-wa id="hero-cta" class="btn btn-primary btn-lg">
+        <Icon name="whatsapp" size={19} /> Pedir orçamento no WhatsApp
+      </a>
+      <a href="#produtos" class="btn btn-outline-light btn-lg">Ver produtos</a>
+    </div>
+
+    <!-- FOTO DO HERO: trocar pelo arquivo real (estoque ou equipe, paisagem, mín. 2400×1050) -->
+    <div class="ph ph-dark relative z-10 mx-auto mt-11 aspect-[4/3] max-w-[1200px] justify-end rounded-[14px] p-5 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.35)] sm:mt-[72px] sm:aspect-[16/7] sm:rounded-card" role="img" aria-label="Foto do estoque da Evolumix (em breve)">
+      <span class="ph-label">Placeholder · foto real do estoque ou da equipe</span>
+    </div>
+  </div>
+</section>
+
+<div class="container-x">
+  <ul class="grid grid-cols-2 gap-y-7 pt-10 pb-2 sm:pt-14 lg:grid-cols-4" aria-label="A Evolumix em números">
+    {stats.map((s, i) => (
+      <li class:list={['border-ash', i % 2 === 1 && 'border-l pl-[18px] sm:pl-7', i > 0 && 'lg:border-l lg:pl-7']} data-reveal style={`--d:${i * 70}ms`}>
+        <b class="block text-[24px] leading-[1.1] font-light tracking-[-0.035em] min-[380px]:text-[28px] sm:text-[44px]">{s.big}</b>
+        <span class="text-sm text-txt-2 sm:text-[15px]">{s.small}</span>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  /* Fundo grafite com brilho amarelo; a parte de baixo vira branco atrás da foto */
+  .hero {
+    background:
+      linear-gradient(180deg, transparent 80%, #fff 80%),
+      radial-gradient(90% 30% at 50% 80%, rgb(244 204 48 / 0.42), rgb(244 204 48 / 0.1) 55%, transparent 80%),
+      var(--color-ink);
+  }
+  @media (min-width: 640px) {
+    .hero {
+      background:
+        linear-gradient(180deg, transparent 72%, #fff 72%),
+        radial-gradient(70% 42% at 50% 72%, rgb(244 204 48 / 0.42), rgb(244 204 48 / 0.1) 55%, transparent 80%),
+        var(--color-ink);
+    }
+  }
+</style>

@@ -1,0 +1,54 @@
+---
+import Icon from './Icon.astro';
+import { sellers, waLink, formatPhone } from '../data/site';
+
+const groups = [
+  { id: 'goiania', label: 'Goiânia' },
+  { id: 'ferragista', label: 'Ferragista' },
+  { id: 'rioverde', label: 'Rio Verde' },
+] as const;
+
+const initials = (n: string) => n.split(' ').map((p) => p[0]).slice(0, 2).join('');
+---
+<section id="vendedores" class="bg-soft py-[72px] sm:py-24" aria-labelledby="vendedores-titulo">
+  <div class="container-x">
+    <div class="mb-8 flex flex-col gap-6 sm:mb-12 lg:flex-row lg:items-end lg:justify-between" data-reveal>
+      <div>
+        <p class="kicker"><span class="speed"><i></i><i></i></span>Já é cliente?</p>
+        <h2 id="vendedores-titulo" class="h-section max-w-[16ch]">Fale direto com o seu vendedor.</h2>
+      </div>
+      <div role="tablist" aria-label="Equipe de vendas" class="pill-tabs w-full bg-white sm:w-auto">
+        {groups.map((g, i) => (
+          <button type="button" role="tab" id={`tab-v-${g.id}`} aria-controls={`painel-v-${g.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} class="!px-3 max-[379px]:text-sm min-[380px]:!px-4 sm:!px-5">{g.label}</button>
+        ))}
+      </div>
+    </div>
+
+    {groups.map((g, gi) => (
+      <div id={`painel-v-${g.id}`} role="tabpanel" aria-labelledby={`tab-v-${g.id}`} hidden={gi !== 0}>
+        <ul class="grid gap-3 md:grid-cols-2">
+          {sellers[g.id].map((s) => (
+            <li>
+              <a href={waLink(s.phone)} target="_blank" rel="noopener" class="group flex min-h-[76px] items-center gap-4 rounded-[10px] border border-ash bg-white px-4 py-3.5 transition-colors hover:border-txt/40 sm:px-5">
+                <span class="grid size-11 shrink-0 place-items-center rounded-full bg-ink text-[15px] font-semibold text-brand" aria-hidden="true">{initials(s.name)}</span>
+                <span class="min-w-0">
+                  <b class="block font-semibold">{s.name}</b>
+                  <small class="block text-sm text-txt-2">{s.role}<span class="max-sm:hidden"> · </span><span class="block whitespace-nowrap sm:inline">{formatPhone(s.phone)}</span></small>
+                </span>
+                <span class="ml-auto flex shrink-0 items-center gap-2 text-sm font-semibold text-txt-2 group-hover:text-txt">
+                  <Icon name="whatsapp" size={18} /><span class="max-sm:sr-only">WhatsApp</span>
+                  <Icon name="arrow" size={16} class="transition-transform duration-200 group-hover:translate-x-0.5" />
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  import { initTabs } from '../scripts/tabs';
+  initTabs();
+</script>

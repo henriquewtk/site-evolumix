@@ -1,0 +1,141 @@
+---
+import Icon from './Icon.astro';
+import { company, sellers, waLink, formatPhone } from '../data/site';
+
+const greice = sellers.rioverde[0];
+---
+<!--
+  Seletor de unidade: qualquer link com [data-wa] abre este diálogo.
+  Sem JavaScript, os links seguem direto para o WhatsApp da televendas.
+-->
+<dialog id="wa-picker" aria-labelledby="wa-titulo" class="wa-dialog m-auto w-full max-w-[460px] rounded-card bg-white p-0 text-txt shadow-2xl backdrop:bg-ink/60 backdrop:backdrop-blur-sm max-sm:mb-0 max-sm:max-w-none max-sm:rounded-b-none">
+  <div class="p-6 sm:p-7">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <p class="kicker !mb-2"><span class="speed"><i></i><i></i></span>WhatsApp</p>
+        <h2 id="wa-titulo" class="text-2xl font-normal tracking-[-0.03em]">Com qual unidade você quer falar?</h2>
+      </div>
+      <button type="button" data-wa-close class="-mt-1 -mr-2 grid size-11 shrink-0 place-items-center rounded-full text-txt-2 hover:bg-soft hover:text-txt" aria-label="Fechar">
+        <Icon name="close" size={20} />
+      </button>
+    </div>
+
+    <ul class="mt-6 grid gap-2.5">
+      <li>
+        <a data-wa-target href={waLink(company.mainPhone)} data-phone={company.mainPhone} target="_blank" rel="noopener" class="wa-opt">
+          <span class="min-w-0"><b>Goiânia</b><small>Higiene, limpeza e descartáveis · <span class="whitespace-nowrap">{formatPhone(company.mainPhone)}</span></small></span>
+          <Icon name="whatsapp" size={20} class="ml-auto shrink-0" />
+        </a>
+      </li>
+      <li id="wa-ferragista" class="rounded-[12px] border border-ash p-4">
+        <p class="font-semibold">Goiânia · Ferragista</p>
+        <p class="text-sm text-txt-2">Escolha um dos vendedores da loja:</p>
+        <div class="mt-3 grid grid-cols-2 gap-2">
+          {sellers.ferragista.map((s) => (
+            <a data-wa-target href={waLink(s.phone)} data-phone={s.phone} target="_blank" rel="noopener" class="btn btn-dark btn-sm !min-h-11 !px-3">
+              <Icon name="whatsapp" size={17} /> {s.name.split(' ')[0]}
+            </a>
+          ))}
+        </div>
+      </li>
+      <li>
+        <a data-wa-target href={waLink(greice.phone)} data-phone={greice.phone} target="_blank" rel="noopener" class="wa-opt">
+          <span class="min-w-0"><b>Rio Verde</b><small>{greice.name.split(' ')[0]} · {formatPhone(greice.phone)}</small></span>
+          <Icon name="whatsapp" size={20} class="ml-auto shrink-0" />
+        </a>
+      </li>
+    </ul>
+  </div>
+</dialog>
+
+<!-- Botão flutuante (só no celular), aparece depois que o CTA do topo sai da tela -->
+<a id="wa-float" href={waLink(company.mainPhone)} data-wa class="btn btn-primary fixed right-4 bottom-4 z-40 translate-y-24 opacity-0 shadow-[0_10px_30px_-8px_rgba(0,0,0,0.45)] transition-[transform,opacity] duration-300 data-[show=true]:translate-y-0 data-[show=true]:opacity-100 lg:hidden" aria-label="Pedir orçamento no WhatsApp" tabindex="-1">
+  <Icon name="whatsapp" size={20} /> Orçamento
+</a>
+
+<style>
+  .wa-opt {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-height: 68px;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--color-ash);
+    border-radius: 12px;
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+  .wa-opt:hover {
+    border-color: rgb(14 14 16 / 0.4);
+    background: var(--color-soft);
+  }
+  .wa-opt b {
+    display: block;
+    font-weight: 600;
+  }
+  .wa-opt small {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--color-txt-2);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .wa-dialog[open] {
+      animation: wa-in 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+  }
+  @keyframes wa-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+</style>
+
+<script>
+  import { WA_MESSAGE } from '../data/site';
+
+  const dialog = document.getElementById('wa-picker') as HTMLDialogElement;
+  const targets = dialog.querySelectorAll<HTMLAnchorElement>('[data-wa-target]');
+
+  document.addEventListener('click', (e) => {
+    const trigger = (e.target as HTMLElement).closest<HTMLElement>('[data-wa]');
+    if (!trigger || typeof dialog.showModal !== 'function') return;
+    e.preventDefault();
+    const msg = trigger.dataset.waMsg || WA_MESSAGE;
+    targets.forEach((a) => {
+      a.href = `https://wa.me/${a.dataset.phone}?text=${encodeURIComponent(msg)}`;
+    });
+    dialog.showModal();
+    if (trigger.dataset.waUnit === 'ferragista') {
+      dialog.querySelector<HTMLAnchorElement>('#wa-ferragista a')?.focus();
+    }
+  });
+
+  dialog.addEventListener('click', (e) => {
+    const el = e.target as HTMLElement;
+    // clique fora da caixa (no fundo), no X ou em uma opção fecha o diálogo
+    if (el === dialog || el.closest('[data-wa-close]') || el.closest('[data-wa-target]')) dialog.close();
+  });
+
+  // Botão flutuante no celular
+  const float = document.getElementById('wa-float')!;
+  const heroCta = document.getElementById('hero-cta');
+  const finalCta = document.getElementById('cta-titulo');
+  if (heroCta && 'IntersectionObserver' in window) {
+    let pastHero = false;
+    let atFinal = false;
+    const update = () => {
+      const show = pastHero && !atFinal;
+      float.dataset.show = String(show);
+      float.tabIndex = show ? 0 : -1;
+    };
+    new IntersectionObserver(([e]) => {
+      pastHero = !e.isIntersecting && e.boundingClientRect.top < 0;
+      update();
+    }).observe(heroCta);
+    if (finalCta)
+      new IntersectionObserver(([e]) => {
+        atFinal = e.isIntersecting;
+        update();
+      }).observe(finalCta);
+  }
+</script>

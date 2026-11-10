@@ -1,0 +1,23 @@
+---
+import Icon from './Icon.astro';
+import { company, waLink, formatPhone } from '../data/site';
+---
+<section class="final on-dark relative overflow-hidden bg-ink py-24 text-center text-white sm:py-32" aria-labelledby="cta-titulo">
+  <div class="container-x relative" data-reveal>
+    <h2 id="cta-titulo" class="h-display mx-auto max-w-[18ch] text-[38px] sm:text-[56px] lg:text-[68px]">
+      Mande sua lista. <strong class="block font-semibold text-brand">A gente monta o orçamento.</strong>
+    </h2>
+    <div class="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
+      <a href={waLink(company.mainPhone)} data-wa class="btn btn-primary btn-lg"><Icon name="whatsapp" size={19} /> Pedir orçamento no WhatsApp</a>
+      <a href={`tel:+${company.mainPhone}`} class="btn btn-outline-light btn-lg"><Icon name="phone" size={18} /> Ligar {formatPhone(company.mainPhone)}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .final {
+    background:
+      radial-gradient(60% 70% at 50% 120%, rgb(244 204 48 / 0.35), rgb(244 204 48 / 0.08) 55%, transparent 80%),
+      var(--color-ink);
+  }
+</style>

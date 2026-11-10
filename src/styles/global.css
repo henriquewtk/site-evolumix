@@ -1,0 +1,167 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-ink: #141416;
+  --color-ink-2: #1f1f22;
+  --color-ink-3: #2c2c30;
+  --color-brand: #f4cc30;
+  --color-brand-hover: #ffd84a;
+  --color-brand-ink: #7a5e00;
+  --color-brand-soft: #fbf1c9;
+  --color-soft: #f6f5f2;
+  --color-txt: #0e0e10;
+  --color-txt-2: #4a4a50;
+  --color-ash: #deddd8;
+  --color-on-dark: #ffffffb8;
+
+  --font-sans: 'Manrope Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --radius-card: 16px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 88px;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-white font-sans text-txt antialiased;
+    font-feature-settings: 'ss01' off;
+  }
+  ::selection {
+    background: var(--color-brand);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  .on-dark :focus-visible {
+    outline-color: var(--color-brand);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-[1200px] px-5 sm:px-8;
+  }
+
+  /* Botões em pílula */
+  .btn {
+    @apply inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full px-6 text-[15px] font-semibold tracking-[-0.01em] whitespace-nowrap transition-colors duration-200 sm:text-base;
+  }
+  .btn svg {
+    flex-shrink: 0;
+  }
+  .btn-lg {
+    @apply min-h-[52px] px-7;
+  }
+  .btn-sm {
+    @apply min-h-11 px-4.5 text-[15px];
+  }
+  .btn-primary {
+    @apply bg-brand text-ink hover:bg-brand-hover;
+  }
+  .btn-outline-light {
+    @apply border border-white/40 text-white hover:border-white hover:bg-white/5;
+  }
+  .btn-outline-dark {
+    @apply border border-txt/25 text-txt hover:border-txt;
+  }
+  .btn-dark {
+    @apply bg-ink text-white hover:bg-ink-3;
+  }
+
+  /* Assinatura: as "linhas de velocidade" inclinadas do logo */
+  .speed {
+    @apply inline-flex flex-col gap-[3px];
+  }
+  .speed i {
+    @apply block h-[3px] rounded-[2px] bg-brand;
+    transform: skewX(-16deg);
+  }
+  .speed i:first-child {
+    width: 18px;
+  }
+  .speed i:last-child {
+    width: 11px;
+    margin-left: 5px;
+    background: currentColor;
+  }
+
+  .kicker {
+    @apply mb-4 flex items-center gap-2.5 text-sm font-semibold text-brand-ink;
+  }
+  .kicker .speed {
+    color: var(--color-ink);
+  }
+  .on-dark .kicker {
+    @apply text-brand;
+  }
+  .on-dark .kicker .speed {
+    color: #fff;
+  }
+
+  .h-display {
+    @apply font-light tracking-[-0.035em];
+    line-height: 1.04;
+  }
+  .h-section {
+    @apply text-[34px] leading-[1.1] font-normal tracking-[-0.03em] sm:text-[44px] lg:text-[52px];
+  }
+
+  /* Abas em pílula (toggle) */
+  .pill-tabs {
+    @apply inline-flex rounded-full border border-ash bg-soft p-1;
+  }
+  .pill-tabs [role='tab'] {
+    @apply min-h-10 flex-1 cursor-pointer rounded-full px-5 whitespace-nowrap text-[15px] font-semibold text-txt-2 transition-colors duration-200 hover:text-txt;
+  }
+  .pill-tabs [role='tab'][aria-selected='true'] {
+    @apply bg-ink text-white;
+  }
+
+  /* Placeholder de foto (trocar por imagens reais) */
+  .ph {
+    @apply relative flex items-end overflow-hidden p-3.5;
+    background: repeating-linear-gradient(-74deg, #eeede9 0 12px, #f6f5f2 12px 24px);
+  }
+  .ph-dark {
+    background: repeating-linear-gradient(-74deg, #2e2e31 0 14px, #29292c 14px 28px);
+  }
+  .ph-label {
+    @apply rounded-full border border-ash bg-white px-2.5 py-1 text-[11px] font-semibold tracking-[0.06em] text-txt-2 uppercase;
+  }
+  .ph-dark .ph-label {
+    @apply border-transparent bg-brand text-ink;
+  }
+}
+
+/* Revelação suave ao rolar (só com JS ativo e sem redução de movimento) */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+      transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition-delay: var(--d, 0ms);
+  }
+  .js [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+}
